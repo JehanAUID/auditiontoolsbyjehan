@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Audition EXP Calculator Mode 1</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .expBox {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            width: 100%;
+            padding: 8px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .box input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        button {
+            padding: 10px;
+            width: 100%;
+            background: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Audition EXP Calculator Mode 1 by Jehan</h2>
+
+    <div class="box">
+
+        <!-- Level Start -->
+        <label>Levelmu sekarang</label>
+        <input type="number" id="startLevel" min="1" max="200" value="1">
+        <input type="text" id="startExpDisplay" value="0" readonly class="expBox">
+
+        <!-- Level End -->
+        <label>Level yang dirimu inginkan</label>
+        <input type="number" id="endLevel" min="1" max="200" value="2">
+        <input type="text" id="endExpDisplay" value="220" readonly class="expBox">
+
+        <!-- Round Average -->
+        <label>Jumlah round rata-rata setiap hari</label>
+        <input type="number" id="RoundAverage" min="1" max="600" value="520">
+
+        <button onclick="calculateEXP()">Hitung EXP</button>
+    </div>
+
+    <h3>Hasil:</h3>
+    <p id="result">Masukkan level dan klik hitung.</p>
+</div>
+
+<script src="script_mode1.js"></script>
+</body>
+<footer style="text-align:center; margin-top:20px;">
+    <a href="index.html">← Kembali ke Menu</a><br><br>
+    Created by Jehan, help by ChatGPT 2025<br>
+    Special Thanks : AEP Garden <br>
+</footer>
+</body>
+</html>

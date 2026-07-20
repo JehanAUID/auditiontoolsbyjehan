@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Audition EXP Calculator Mode 2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Audition EXP Calculator Mode 2 by Jehan</h2>
+
+    <div class="box">
+
+        <label>Levelmu sekarang:</label>
+        <input type="number" id="startLevel" min="1" max="200" value="61">
+
+        <label>Mau GB berapa hari?</label>
+        <input type="number" id="days" min="1" max="365" value="30">
+
+        <label>Jumlah round rata-rata setiap hari:</label>
+        <input type="number" id="RoundAverage" min="1" max="600" value="520">
+
+        <button onclick="calculateEXP_Mode2()">Hitung EXP</button>
+    </div>
+
+    <h3>Hasil:</h3>
+    <p id="result">Masukkan data dan klik hitung.</p>
+</div>
+
+<footer style="text-align:center; margin-top:20px;">
+    <a href="index.html">← Kembali ke Menu</a><br><br>
+    Created by Jehan, help by ChatGPT 2025<br>
+    Special Thanks : AEP Garden <br>
+</footer>
+
+<script src="script_mode2.js"></script>
+</body>
+</html>

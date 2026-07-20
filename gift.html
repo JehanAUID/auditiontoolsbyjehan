@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gift Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<div class="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">Gift Calculator</h1>
+
+    <!-- Boxes Container -->
+    <div class="grid grid-cols-2 gap-4">
+
+        <!-- 5 Boxes -->
+        <script>
+            for (let i = 1; i <= 5; i++) {
+                document.write(`
+                    <div class='p-3 border rounded-xl bg-gray-50'>
+                        <input placeholder='Title Box ${i}' class='titleBox w-full mb-2 p-2 border rounded-lg autoCalc'>
+                        <input type='number' class='valueBox w-full p-2 border rounded-lg mb-2 autoCalc' placeholder='0'>
+                        <input type='number' class='multBox w-full p-2 border rounded-lg autoCalc' placeholder='x berapa?'>
+                    </div>
+                `);
+            }
+        </script>
+
+        <!-- Not Rated -->
+        <div class="p-3 border rounded-xl bg-gray-50">
+            <input placeholder="Not Rated Title" class="titleNoRate w-full mb-2 p-2 border rounded-lg autoCalc">
+            <input type="number" class="valueNoRate w-full p-2 border rounded-lg mb-2 autoCalc" placeholder="0">
+            <input type="number" class="multNoRate w-full p-2 border rounded-lg autoCalc" placeholder="x berapa?">
+        </div>
+
+        <!-- Rate -->
+        <div class="p-3 border rounded-xl bg-gray-50">
+            <p class="font-semibold mb-2">Rate %</p>
+            <input type="number" id="rateInput" class="w-full p-2 border rounded-lg autoCalc" placeholder="0">
+        </div>
+
+
+       <!-- Hemat -->
+        <div class="p-3 border rounded-xl bg-gray-50">
+            <p class="font-semibold mb-2">Hemat</p>
+            <input type="text" id="hematBox" class="w-full p-2 border rounded-lg bg-gray-200" readonly>
+        </div>
+
+
+        <!-- Sebelum Rate -->
+        <div class="p-3 border rounded-xl bg-gray-50">
+            <p class="font-semibold mb-2">Sebelum Rate</p>
+            <input type="text" id="beforeRate" class="w-full p-2 border rounded-lg bg-gray-200" readonly>
+        </div>
+
+
+        <!-- Sesudah Rate -->
+        <div class="p-3 border rounded-xl bg-gray-50">
+            <p class="font-semibold mb-2">Sesudah Rate</p>
+            <input type="text" id="afterRate" class="w-full p-2 border rounded-lg bg-gray-200" readonly>
+        </div>
+
+
+        <!-- Your Text Box -->
+        <div class="p-3 border rounded-xl bg-gray-50 col-span-2">
+            <p class="font-semibold mb-2">Your Text</p>
+            <input id="yourText" class="w-full p-2 border rounded-lg autoCalc" placeholder="Masukkan teks bebas...">
+        </div>
+
+        <!-- Rincian -->
+        <div class="p-3 border rounded-xl bg-gray-50 col-span-2">
+            <p class="font-semibold mb-2">Rincian Hasil</p>
+            <textarea id="resultBox" class="w-full p-2 border rounded-lg bg-gray-200 h-40" readonly></textarea>
+        </div>
+        <div class="p-3 border rounded-xl bg-gray-50 col-span-2">
+            <p class="font-semibold mb-2">Informasi : Kolom "Not Rated" tidak terhitung dalam rate (contoh : Micash untuk beli Mark H)</p>
+	</div>
+
+ 
+    </div>
+
+    <!-- Copy Button -->
+    <button onclick="copyRincian()" 
+        class="w-full mt-3 py-2 rounded-xl bg-indigo-600 text-white font-semibold">
+        Copy Rincian
+    </button>
+
+    <!-- Buttons -->
+    <div class="flex gap-3 mt-6">
+
+        <button onclick="saveProfile()" class="w-full py-2 rounded-xl bg-green-600 text-white font-semibold">Save</button>
+
+        <button onclick="loadProfile()" class="w-full py-2 rounded-xl bg-yellow-600 text-white font-semibold">Load</button>
+
+        <button onclick="clearAll()" class="w-full py-2 rounded-xl bg-gray-600 text-white font-semibold">Clear</button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" 
+        class="fixed bottom-5 right-5 bg-black text-white px-4 py-2 rounded-xl opacity-0 transition-opacity duration-500 pointer-events-none">
+        Copy berhasil!
+    </div>
+
+    <!-- Profile Section -->
+    <div class="mt-6 p-4 border rounded-xl bg-gray-50">
+        <label class="font-semibold">Profile:</label>
+        <select id="profileSelect" class="w-full p-2 border rounded-lg mb-3"></select>
+
+        <input id="renameInput" class="w-full p-2 border rounded-lg mb-3" placeholder="Rename profile...">
+        <button onclick="renameProfile()" class="w-full py-2 rounded-xl bg-purple-600 text-white font-semibold">
+            Rename Profile
+        </button>
+    </div>
+
+    <footer style="text-align:center; margin-top:20px;">
+        <a href="index.html">← Kembali ke Menu</a><br><br>
+        Created by Jehan, help by ChatGPT 2025<br>
+        Special Thanks : AEP Garden <br>
+    </footer>
+
+</div>
+
+<script>
+// ---------- Profile Names Init ----------
+function loadProfileNames() {
+    let names = JSON.parse(localStorage.getItem("calc_profile_names"));
+    if (!names) {
+        names = {};
+        for (let i = 1; i <= 30; i++) names[i] = "Profile " + i;
+        localStorage.setItem("calc_profile_names", JSON.stringify(names));
+    }
+    return names;
+}
+
+function refreshProfileDropdown() {
+    const select = document.getElementById("profileSelect");
+    const names = loadProfileNames();
+    
+    select.innerHTML = "";
+
+    // Universal profile paling atas
+    select.innerHTML += `<option value="universal">GB EXP</option>`;
+
+    // 30 profile local biasa
+    for (let i = 1; i <= 30; i++) {
+        select.innerHTML += `<option value="${i}">${names[i]}</option>`;
+    }
+}
+function renameProfile() {
+    const id = document.getElementById("profileSelect").value;
+    const newName = document.getElementById("renameInput").value.trim();
+
+    if (!id) return alert("Pilih profil dulu!");
+    if (!newName) return alert("Nama tidak boleh kosong!");
+
+    const names = loadProfileNames();
+    names[id] = newName;
+
+    localStorage.setItem("calc_profile_names", JSON.stringify(names));
+
+    refreshProfileDropdown();
+
+    alert("Nama profil berhasil diubah!");
+}
+
+// ---------- Multiplier Logic ----------
+function setupMultiplier() {
+    const valueBoxes = document.querySelectorAll('.valueBox');
+    const multBoxes = document.querySelectorAll('.multBox');
+
+    valueBoxes.forEach((vb, i) => {
+        vb.dataset.original = vb.value;
+
+        multBoxes[i].addEventListener('input', () => {
+            const m = Number(multBoxes[i].value);
+            if (m > 0) vb.value = Number(vb.dataset.original || vb.value) * m;
+            else vb.value = vb.dataset.original;
+            calc();
+        });
+
+        vb.addEventListener('input', () => {
+            vb.dataset.original = vb.value;
+            calc();
+        });
+    });
+
+    const nrValue = document.querySelector('.valueNoRate');
+    const nrMult = document.querySelector('.multNoRate');
+    nrValue.dataset.original = nrValue.value;
+
+    nrMult.addEventListener('input', () => {
+        const m = Number(nrMult.value);
+        nrValue.value = m > 0 ? Number(nrValue.dataset.original || nrValue.value) * m : nrValue.dataset.original;
+        calc();
+    });
+
+    nrValue.addEventListener('input', () => {
+        nrValue.dataset.original = nrValue.value;
+        calc();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupMultiplier();
+    refreshProfileDropdown();
+
+    // AUTO CALC WHEN ANY INPUT CHANGES
+    document.querySelectorAll('.autoCalc').forEach(inp => {
+        inp.addEventListener('input', calc);
+    });
+});
+
+// ---------- Calc ----------
+function calc() {
+    const titles = [...document.querySelectorAll('.titleBox')].map(t => t.value);
+    const ratedValues = [...document.querySelectorAll('.valueBox')].map(v => Number(v.value) || 0);
+    const noRateTitle = document.querySelector('.titleNoRate').value;
+    const noRate = Number(document.querySelector('.valueNoRate').value) || 0;
+    const rateValue = Number(document.getElementById('rateInput').value) || 0;
+
+    let rincian = "Rincian:\n";
+
+    let sumRated = 0;
+    titles.forEach((t, i) => {
+        if (t.trim() !== "" && ratedValues[i] !== 0) {
+            rincian += `${t} = ${ratedValues[i]}\n`;
+            sumRated += ratedValues[i];
+        }
+    });
+
+    if (noRateTitle.trim() !== "" && noRate !== 0)
+        rincian += `${noRateTitle} = ${noRate}\n`;
+
+    const before = sumRated + noRate;
+    const after = (sumRated * rateValue / 100) + noRate;
+    const hemat = before - after;
+
+
+    document.getElementById('beforeRate').value = before;
+    document.getElementById('hematBox').value = hemat;
+    document.getElementById('afterRate').value = after;
+
+
+    rincian += `Rate = ${rateValue}%\n`;
+    rincian += `Total Setelah Rate = ${after}\n`;
+    rincian += `Hemat = ${hemat}\n`;
+
+    const yourText = document.getElementById('yourText').value.trim();
+    if (yourText !== "") rincian += `\n${yourText}`;
+
+    document.getElementById('resultBox').value = rincian;
+}
+
+// ---------- Save ----------
+function saveProfile() {
+    const profile = document.getElementById('profileSelect').value;
+    if (profile === "universal") return alert("Profile ini tidak bisa disimpan!");
+    if (!profile) return alert("Pilih profil dulu!");
+
+    const data = {
+        titles: [...document.querySelectorAll('.titleBox')].map(t => t.value),
+        values: [...document.querySelectorAll('.valueBox')].map(v => v.value),
+        mults: [...document.querySelectorAll('.multBox')].map(m => m.value),
+        titleNoRate: document.querySelector('.titleNoRate').value,
+        valueNoRate: document.querySelector('.valueNoRate').value,
+        multNoRate: document.querySelector('.multNoRate').value,
+        rateInput: document.getElementById('rateInput').value,
+        yourText: document.getElementById('yourText').value
+    };
+
+    localStorage.setItem("calc_profile_" + profile, JSON.stringify(data));
+    alert("Saved!");
+}
+// ---------- UNIVERSAL PROFILE (GB EXP) ----------
+function loadUniversalProfile() {
+
+    // BOX 1–5
+    const titles = ["Event", "Mascot", "DJ 30 hari", "Unicorn 30 hari", ""];
+    const values = ["8600", "30000", "24000", "30000", ""];
+    const mults  = ["", "", "", "", ""];
+
+    document.querySelectorAll('.titleBox').forEach((t, i) => t.value = titles[i] || "");
+    document.querySelectorAll('.valueBox').forEach((v, i) => v.value = values[i] || "");
+    document.querySelectorAll('.multBox').forEach((m, i) => m.value = mults[i] || "");
+
+    // NOT RATED
+    document.querySelector('.titleNoRate').value = "Mark H (micash 50k)";
+    document.querySelector('.valueNoRate').value = "54000";
+    document.querySelector('.multNoRate').value = "";
+
+    // RATE
+    document.getElementById('rateInput').value = "60";
+
+    // YOUR TEXT
+    document.getElementById('yourText').value = "Pembayaran ke BCA an Jehan XXXXXXXX";
+
+    calc();
+    alert("Profile 'GB EXP' Loaded!");
+}
+
+// ---------- Load ----------
+function loadProfile() {
+    const profile = document.getElementById('profileSelect').value;
+
+    // Jika universal → pakai fungsi khusus
+    if (profile === "universal") {
+        loadUniversalProfile();
+        return;
+    }
+
+    if (!profile) return alert("Pilih profil dulu!");
+
+    const saved = localStorage.getItem("calc_profile_" + profile);
+    if (!saved) return alert("Belum ada data!");
+
+    const data = JSON.parse(saved);
+
+    document.querySelectorAll('.titleBox').forEach((t, i) => t.value = data.titles[i] || "");
+    document.querySelectorAll('.valueBox').forEach((v, i) => v.value = data.values[i] || "");
+    document.querySelectorAll('.multBox').forEach((m, i) => m.value = data.mults[i] || "");
+
+    document.querySelector('.titleNoRate').value = data.titleNoRate || "";
+    document.querySelector('.valueNoRate').value = data.valueNoRate || "";
+    document.querySelector('.multNoRate').value = data.multNoRate || "";
+
+    document.getElementById('rateInput').value = data.rateInput || "";
+    document.getElementById('yourText').value = data.yourText || "";
+
+    calc();
+    alert("Loaded!");
+}
+
+
+// ---------- Clear ----------
+function clearAll() {
+    document.querySelectorAll('input').forEach(i => i.value = "");
+    document.getElementById('resultBox').value = "";
+    calc();
+}
+
+// ---------- Copy ----------
+function copyRincian() {
+    const text = document.getElementById("resultBox").value;
+    if (!text.trim()) return alert("Belum ada rincian!");
+
+    navigator.clipboard.writeText(text).then(() => showToast());
+}
+
+function showToast() {
+    const toast = document.getElementById("toast");
+    toast.style.opacity = "1";
+    setTimeout(() => toast.style.opacity = "0", 1500);
+}
+
+</script>
+
+</body>
+</html>
